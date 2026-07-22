@@ -60,6 +60,7 @@ void move_piece(void)
     Board[move[3]][move[2]].piece = Board[move[1]][move[0]].piece;
     Board[move[3]][move[2]].colour = Board[move[1]][move[0]].colour;
     Board[move[1]][move[0]].piece = ' ';
+    Board[move[1]][move[0]].colour = 'X';
 }
 
 // Checks if the move is valid
@@ -86,35 +87,34 @@ bool general_valid(void)
 
 bool blocked(void)
 {
-    int diff[] = {move[2] - move[0], move[3] - move[0]};
+    int diff[] = {move[2] - move[0], move[3] - move[1]};
     if (diff[0] == 0 && diff[1] != 0)
     {
-        if (diff[1] > 0)
+        for (int i = 1; i < abs(diff[1]); i++)
         {
-            return blocked_up(diff[1]);
-        }
-        else
-        {
-            return blocked_down(diff[1]);
+            if (diff[1] > 0)
+            {
+                if (Board[move[1] + i][move[0]].colour == current_player) return false;
+            }
+            else
+            {
+                if (Board[move[1] - i][move[0]].colour == current_player) return false;
+            }
         }
     }
-    return true;
-}
-
-bool blocked_up(int diff)
-{
-    for (int i = 1; i < diff; i++)
+    else
     {
-        if (Board[move[1] + i][move[0]].colour == current_player) return false;
-    }
-    return true;
-}
-
-bool blocked_down(int diff)
-{
-    for (int i = 1; i < diff; i++)
-    {
-        if (Board[move[1] - i][move[0]].colour == current_player) return false;
+        for (int i = 1; i < abs(diff[0]); i++)
+        {
+            if (diff[0] > 0)
+            {
+                if (Board[move[1]][move[0] + i].colour == current_player) return false;
+            }
+            else
+            {
+                if (Board[move[1]][move[0] - i].colour == current_player) return false;
+            }
+        }
     }
     return true;
 }
